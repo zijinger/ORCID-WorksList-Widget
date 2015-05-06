@@ -7,8 +7,7 @@ $jq(document).ready(function () {
         var profile_promise = get_orcid_profile(value.trim())
             profile_promise.success(function (data) {
             profile = data['orcid-profile']
-            widget.append(set_widget_content(profile))
-            sort_profiles(widget) 
+            widget.append(set_widget_content(profile)) 
         })
     })
     
@@ -51,27 +50,36 @@ $jq(document).ready(function () {
     }
 
     function list_person_works(works) {
-        var ul = $jq('<ul class="orcid-works">');
+        var seendois = [];
+		var ul = $jq('<ul class="orcid-works">');
         $jq(works).each(function (index, value) {
             var title = value['work-title']['title'].value;
             var li = $jq('<li class="orcid-work">');
             var extids = value['work-external-identifiers']['work-external-identifier'];
             var href = "";
             $jq(extids).each(function (index, value) {
-                if (value['work-external-identifier-type'] === "DOI") {
+                var doi = "";
+				if (value['work-external-identifier-type'] === "DOI") {
                     href = "http://dx.doi.org/";
-                    href += value['work-external-identifier-id'].value;
-                }
+					doi = value['work-external-identifier-id'].value;
+					//Check for and ignore duplicate works based on DOI
+					if (doi != ""){
+						if (jQuery.inArray(doi, seendois)==-1){
+							seendois[seendois.length] = doi;
+							href += doi;
+							var a = $jq('<a class="orcid-work">');
+							a.attr("href", href);
+							a.text(title);
+							a.appendTo(li);
+							li.appendTo(ul);
+						}
+					}
+					else{
+						li.text(title);
+						li.appendTo(ul);
+					}	
+				}
             });
-            if (href != "") {
-                var a = $jq('<a class="orcid-work">');
-                a.attr("href", href);
-                a.text(title);
-                a.appendTo(li);
-            } else {
-                li.text(title);
-            }
-            li.appendTo(ul);
         });
         return ul
     }
