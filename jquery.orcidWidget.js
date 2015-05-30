@@ -55,7 +55,7 @@ $jq(document).ready(function () {
         $jq(works).each(function (index, value) {
             var title = value['work-title']['title'].value;
             var li = $jq('<li class="orcid-work">');
-            var extids = value['work-external-identifiers']['work-external-identifier'];
+            var extids = value['work-external-identifiers'] != null ? value['work-external-identifiers']['work-external-identifier'] : "";
             var href = "";
             $jq(extids).each(function (index, value) {
                 var doi = "";
