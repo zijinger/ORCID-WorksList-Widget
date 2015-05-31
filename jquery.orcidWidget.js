@@ -61,7 +61,7 @@ $jq(document).ready(function () {
                 var doi = "";
 				if (value['work-external-identifier-type'] === "DOI") {
                     href = "http://dx.doi.org/";
-					doi = value['work-external-identifier-id'].value;
+					doi = value['work-external-identifier-id'].value.toUpperCase();
 					//Check for and ignore duplicate works based on DOI
 					if (doi != ""){
 						if (jQuery.inArray(doi, seendois)==-1){
