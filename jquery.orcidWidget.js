@@ -51,35 +51,60 @@ $jq(document).ready(function () {
 
     function list_person_works(works) {
         var seendois = [];
+		var seentitles = [];
 		var ul = $jq('<ul class="orcid-works">');
         $jq(works).each(function (index, value) {
             var title = value['work-title']['title'].value;
-            var li = $jq('<li class="orcid-work">');
-            var extids = value['work-external-identifiers'] != null ? value['work-external-identifiers']['work-external-identifier'] : "";
-            var href = "";
-            $jq(extids).each(function (index, value) {
-                var doi = "";
-				if (value['work-external-identifier-type'] === "DOI") {
-                    href = "http://dx.doi.org/";
-					doi = value['work-external-identifier-id'].value.toUpperCase();
-					//Check for and ignore duplicate works based on DOI
-					if (doi != ""){
-						if (jQuery.inArray(doi, seendois)==-1){
-							seendois[seendois.length] = doi;
-							href += doi;
-							var a = $jq('<a class="orcid-work">');
-							a.attr("href", href);
-							a.text(title);
-							a.appendTo(li);
-							li.appendTo(ul);
+			if (jQuery.inArray(title, seentitles)==-1){
+				seentitles[seentitles.length] = title;
+				var li = $jq('<li class="orcid-work">');
+				var br = $jq('</br>');
+				var spantitle = $jq('<span class="work-title">');
+				spantitle.text(title);
+				br.appendTo(spantitle);
+				var extids = value['work-external-identifiers'] != null ? value['work-external-identifiers']['work-external-identifier'] : "";
+				var doilink = "";
+				var sep = $jq('<span> | </span>');
+				$jq(extids).each(function (index, value) {
+					var doi = "";
+					var handle = "";
+					if (value['work-external-identifier-type'] === "DOI") {
+						doilink = "http://dx.doi.org/";
+						doi = value['work-external-identifier-id'].value.toUpperCase();
+						//Check for and ignore duplicate works based on DOI
+						if (doi != ""){
+							if (jQuery.inArray(doi, seendois)==-1){
+								spantitle.appendTo(li);
+								seendois[seendois.length] = doi;
+								doilink += doi;
+								var adoi = $jq('<a class="doi-link">');
+								adoi.attr("href", doilink);
+								adoi.text("Publisher link");
+								adoi.appendTo(li);
+							}
 						}
 					}
-					else{
-						li.text(title);
+					else if (value['work-external-identifier-type'] === "HANDLE") {
+						if (doi = ""){
+							spantitle.appendTo(li);
+						}
+						handlelink = "http://hdl.handle.net/";
+						handle = value['work-external-identifier-id'].value;
+						handlelink += handle;
+						var ahandle = $jq('<a class="handle-link">');
+						sep.appendTo(li);
+						ahandle.attr("href", handlelink);
+						ahandle.text("Repository link");
+						ahandle.appendTo(li);
+					}
+					else if (value['work-external-identifier-id'].value == "") {
+						spantitle.appendTo(li);
+					}
+					if (jQuery.inArray(doi, seendois)==-1){
 						li.appendTo(ul);
 					}	
-				}
-            });
+				});
+			}	
         });
         return ul
     }
