@@ -85,9 +85,6 @@ $jq(document).ready(function () {
 						}
 					}
 					else if (value['work-external-identifier-type'] === "HANDLE") {
-						if (doi = ""){
-							spantitle.appendTo(li);
-						}
 						handlelink = "http://hdl.handle.net/";
 						handle = value['work-external-identifier-id'].value;
 						handlelink += handle;
