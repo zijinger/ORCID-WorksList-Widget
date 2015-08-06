@@ -37,6 +37,7 @@ $jq(document).ready(function () {
     }
 
     function set_person_works() {
+		orcid_path = profile['orcid-identifier']['path']
         var data = profile['orcid-activities']
         var span = $jq('<span class="orcid-works">');
         $jq('<h2>Works</h2>').appendTo(span);
