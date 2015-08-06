@@ -1,3 +1,4 @@
+//make a change
 var $jq = jQuery.noConflict()
 $jq(document).ready(function () {
     var widget = $jq('#orcid-widget-js').clone(),
