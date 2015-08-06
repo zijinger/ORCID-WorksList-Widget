@@ -37,6 +37,7 @@ $jq(document).ready(function () {
     }
 
     function set_person_works() {
+		orcid_path = profile['orcid-identifier']['path']
         var data = profile['orcid-activities']
         var span = $jq('<span class="orcid-works">');
         $jq('<h2>Works</h2>').appendTo(span);
@@ -49,38 +50,46 @@ $jq(document).ready(function () {
         return span
     }
 
-    function list_person_works(works) {
-        var seendois = [];
+	function list_person_works(works) {
+		var seendois = [];
 		var seentitles = [];
 		var ul = $jq('<ul class="orcid-works">');
+		var li = $jq('<li class="orcid-work">');
         $jq(works).each(function (index, value) {
             var title = value['work-title']['title'].value;
 			//Check for and ignore duplicate works based on title
 			if (jQuery.inArray(title, seentitles)==-1){
 				seentitles[seentitles.length] = title;
-				
-				var contributors = value['work-contributors'] != null ? value['work-contributors']['contributor'] : "";
-				var authors = "";
-				var journal = value['journal-title'] != null ? value['journal-title'].value : "";
-				var li = $jq('<li class="orcid-work">');
-				var br = $jq('</br>');
-				
 				var divtitle = $jq('<div class="work-title">');
 				divtitle.text(title);
 				
+				var journal = value['journal-title'] != null ? value['journal-title'].value : "";
 				var divjournal = $jq('<div class="journal">');
 				divjournal.text(journal);
-				
+								
+				var author = "";
+				var divauthors = $jq('<div class="work-authors">');
+							
+				var contributors = value['work-contributors'] != null ? value['work-contributors']['contributor'] : "";
 				$jq(contributors).each(function (index, value) {
-					var author = "";
-					author = value['credit-name'].value;
-					authors += author;					
-					authors += "; ";
+					var author_orcid = value['contributor-orcid'] != null ? value['contributor-orcid']['path'] : "";
+					//combine the authors' names by span tag with different styles  
+					if(author_orcid == orcid_path){
+						author = value['credit-name'].value;
+						span_author = $jq('<span class="author">');
+						span_author.text(author+'; ');
+						span_author.addClass("exp1");
+						}
+					else{
+						author = value['credit-name'].value;
+						span_author = $jq('<span class="author">');
+						span_author.text(author+'; ');
+						}
+					
+					span_author.appendTo(span_author);
+					span_author.appendTo(divauthors);
 				});
-				
-				var divauthors = $jq('<div class="authors">');
-				divauthors.text(authors);
-				
+								
 				var extids = value['work-external-identifiers'] != null ? value['work-external-identifiers']['work-external-identifier'] : "";
 				var doilink = "";
 				var handle = "";
