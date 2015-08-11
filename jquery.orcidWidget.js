@@ -54,12 +54,20 @@ $jq(document).ready(function () {
 		var seendois = [];
 		var seentitles = [];
 		var ul = $jq('<ul class="orcid-works">');
-		var li = $jq('<li class="orcid-work">');
+		var i=1
         $jq(works).each(function (index, value) {
             var title = value['work-title']['title'].value;
 			//Check for and ignore duplicate works based on title
 			if (jQuery.inArray(title, seentitles)==-1){
 				seentitles[seentitles.length] = title;
+				var ib = i%2
+				if (ib== 0){
+					var li = $jq('<li class="orcid-work_even">');
+				}
+				else{
+				var li = $jq('<li class="orcid-work_odd">');
+				}
+				i=i+1
 				var divtitle = $jq('<div class="work-title">');
 				divtitle.text(title);
 				
@@ -73,6 +81,7 @@ $jq(document).ready(function () {
 				var contributors = value['work-contributors'] != null ? value['work-contributors']['contributor'] : "";
 				$jq(contributors).each(function (index, value) {
 					var author_orcid = value['contributor-orcid'] != null ? value['contributor-orcid']['path'] : "";
+					
 					//combine the authors' names by span tag with different styles  
 					if(author_orcid == orcid_path){
 						author = value['credit-name'].value;
@@ -99,6 +108,7 @@ $jq(document).ready(function () {
 						var doi = "";
 						doilink = "http://dx.doi.org/";
 						doi = value['work-external-identifier-id'].value.toUpperCase();
+						
 						//Check for and ignore duplicate works based on DOI
 						if (jQuery.inArray(doi, seendois)==-1){
 							divtitle.appendTo(li);
