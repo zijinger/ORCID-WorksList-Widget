@@ -98,6 +98,12 @@ $jq(document).ready(function () {
 					span_author.appendTo(span_author);
 					span_author.appendTo(divauthors);
 				});
+				
+				var journal = value['journal-title'] != null ? value['journal-title'].value : "";
+				var year = value['publication-date'] != null ? value['publication-date']['year'] : ""; 
+				var type = value['work-type'] != null ? value['work-type'] : ""; 
+				var bibtex = value['work-citation']['work-citation-type'] === 'bibtex' ? value['work-citation']['citation'] : "";
+				var description = value['short-description'] != null ? value['short-description'] : "";
 								
 				var extids = value['work-external-identifiers'] != null ? value['work-external-identifiers']['work-external-identifier'] : "";
 				var doilink = "";
